@@ -1,6 +1,6 @@
 # Wied License
 
-## `Xenon` (c) 2021-present AV3_08
+## `MCValorant` (c) 2021-present AV3_08
 
 Hello! This is a custom license created for my (AV3_08's) projects.
 
