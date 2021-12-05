@@ -9,12 +9,14 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.World;
+import org.bukkit.block.data.type.Fire;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
@@ -29,12 +31,9 @@ public class CommandEndMatch implements CommandExecutor
     @Override
     public boolean onCommand( @NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args )
     {
-        // sent from console
-        if ( !(sender instanceof Player) ) return false;
-
         Main.logConsole( sender.getName() + " ended the match!" );
 
-        // disable listener
+        // disable listeners
         PlayerDeathEventListener.isEnabled = false;
         PlayerPostRespawnEventListener.isEnabled = false;
         PlayerJoinEventListener.isEnabled = false;
@@ -47,12 +46,13 @@ public class CommandEndMatch implements CommandExecutor
         {
             player.addPotionEffect( new PotionEffect( PotionEffectType.DAMAGE_RESISTANCE, 999999, 255, true, false, true ) );
 
-            // Won't be seen due to the fix where highestScore was set to -1 to resolve the NullPointerException unless something bad happens
-            player.sendTitle( ChatColor.RED + "Oh no!", ChatColor.RED + "If you're seeing this, something bad happened!", 10, 500, 10 );
+            // Won't be seen due to the fix where highestScore was set to -1 to resolve the NullPointerException (unless something bad happens)
+            player.sendTitle( Main.ERROR + "Oh no!", Main.ERROR + "If you're seeing this, something bad happened!", 10, 500, 10 );
 
             Main.logConsole( "Trying to get " + player.getName() + "'s score." );
-            int currentScore = Main.scores.get( player ); // bug here TODO: fix
-            if (currentScore > highestScore)
+            int currentScore = Main.scores.get( player ); // May produce error, hopefully fixed in PlayerPostRespawnEventListener
+
+            if ( currentScore > highestScore )
             {
                 highestScore = currentScore;
                 winner = player;
@@ -63,7 +63,7 @@ public class CommandEndMatch implements CommandExecutor
         // announce winner
         for ( Player player : Main.quickGetPlayers() )
         {
-            // fireworks
+            // fireworks!
             player.playSound( player.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_LAUNCH, 100f, 1f );
             player.playSound( player.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_LAUNCH, 100f, 1f );
             player.playSound( player.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_BLAST, 100f, 1f );
@@ -72,23 +72,25 @@ public class CommandEndMatch implements CommandExecutor
             player.playSound( player.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_TWINKLE, 100f, 1f );
             player.playSound( player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 100f, 1f );
 
-            player.sendMessage( ChatColor.AQUA + winner.getName() + " is the winner of this round with a score of " + highestScore + "!" );
-            player.sendTitle( ChatColor.AQUA + winner.getName() + " wins this round!", ":D", 10, 40, 10 );
+            player.sendMessage( Main.SUCCESS + winner.getName() + " is the winner of this round with a score of " + highestScore + "!" );
+            player.sendTitle( Main.SUCCESS + winner.getName() + " wins this round!", ":D", 10, 40, 10 );
 
             try {
                 for (int i = 0; i < 10; i++) {
                     // spawn 10 fireworks around winner
                     World world = winner.getWorld();
-                    Firework firework = (Firework) world.spawnEntity(winner.getLocation(), EntityType.FIREWORK);
+                    Firework firework = (Firework) world.spawnEntity( winner.getLocation(), EntityType.FIREWORK );
+                    firework.setVisualFire( true );
+                    firework.setGlowing( true );
                     firework.setVelocity( new Vector(0, 10, 0) );
                 }
 
-                MCValorantItemStack dia = new MCValorantItemStack(Material.DIAMOND, 10 );
+                MCValorantItemStack dia = new MCValorantItemStack( Material.DIAMOND, 10 );
                 winner.getInventory().addItem( dia );
             }
             catch ( NullPointerException npe )
             {
-                player.sendMessage( ChatColor.RED + "Whoops! Unable to reward winner! Did they log off?" ) ;
+                Main.informOperator( Main.ERROR + "Whoops! Unable to reward winner! Did they log off?" ); ;
             }
         }
 

@@ -3,6 +3,7 @@ package me.av306.mcvalorant.listener;
 
 import com.destroystokyo.paper.event.player.PlayerPostRespawnEvent;
 import me.av306.mcvalorant.Main;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -26,6 +27,8 @@ public class PlayerPostRespawnEventListener implements Listener
         Player playerWhoDied = event.getPlayer();
 
         Main.logConsole( playerWhoDied.getName() + " has respawned!" );
+
+        playerWhoDied.sendMessage( Main.INFO + "Invincible for 5 seconds!" );
 
         playerWhoDied.addPotionEffect( new PotionEffect( PotionEffectType.DAMAGE_RESISTANCE, 100, 255, true, false, true ) );
         playerWhoDied.addPotionEffect( new PotionEffect( PotionEffectType.GLOWING, 999999, 1, true, false, true ) );

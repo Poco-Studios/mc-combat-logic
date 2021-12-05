@@ -14,10 +14,11 @@ import org.jetbrains.annotations.Nullable;
 public class PlayerDeathEventListener implements Listener
 {
     /**
-     * Gives killer a point after killing someone.
+     * Gives player a point after killing someone.
      */
 
     public static boolean isEnabled = false;
+
 
     @EventHandler
     public void onPlayerDeathEvent( PlayerDeathEvent event )
@@ -28,11 +29,12 @@ public class PlayerDeathEventListener implements Listener
 
         Player killer = playerWhoDied.getKiller();
 
+        // cancel if no "killer" or disabled
         if ( killer == null || !isEnabled ) return;
 
        Main.logConsole( playerWhoDied.getName() + " was killed by " + killer.getName() + "!" );
 
-        // increment killer's score by 1
+        // increment "killer's" score by 1
         try
         {
             int killerScore = Main.scores.get(killer);
@@ -41,10 +43,10 @@ public class PlayerDeathEventListener implements Listener
         }
         catch ( NullPointerException npe )
         {
-            // NPE can be triggered if killer is offline
+            // NPE can be triggered if "killer" is offline
             for ( Player player : Main.quickGetPlayers() )
             {
-                player.sendMessage( ChatColor.RED + "Whoops! failed to increment " + killer.getName() + "'s points! Are they offline?" );
+                player.sendMessage( Main.WARN + "Whoops! failed to increment " + killer.getName() + "'s points! Are they offline?" );
             }
 
             npe.printStackTrace();
@@ -54,7 +56,7 @@ public class PlayerDeathEventListener implements Listener
         for ( Player player : Main.quickGetPlayers() )
         {
             Main.logConsole( killer.getName() + " has " + Main.scores.get( killer ) + " points!" );
-            player.sendMessage( ChatColor.AQUA + killer.getName() + " has " + Main.scores.get( killer ) + " points!" );
+            player.sendMessage( Main.INFO + killer.getName() + " has " + Main.scores.get( killer ) + " points!" );
         }
     }
 }

@@ -13,12 +13,13 @@ public class CommandMatch implements CommandExecutor
 {
     /**
      * This class bunches the two match-related commands together into one.
-     * The three subcommands remain separate for ease of refactoring.
+     * The three subcommands remain separate for ease of doing stuff.
      */
 
     @Override
     public boolean onCommand (@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args )
     {
+        // cancel if sent from console or no arguments
         if ( !(sender instanceof Player) || args.length != 1 ) return false;
 
         switch ( args[0].toLowerCase() )

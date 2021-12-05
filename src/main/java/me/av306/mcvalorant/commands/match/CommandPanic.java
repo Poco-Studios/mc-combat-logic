@@ -31,7 +31,7 @@ public class CommandPanic implements CommandExecutor
         // reset hashmap & send message
         for ( Player player : Main.quickGetPlayers() )
         {
-            player.sendMessage( ChatColor.RED + "Plugin is panicking and this is very bad!!!" );
+            Main.informOperator( Main.ERROR + "Plugin is panicking and this is very bad!!!" );
 
             Main.scores.put( player, 0 );
         }

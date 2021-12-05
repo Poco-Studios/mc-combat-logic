@@ -1,6 +1,5 @@
 package me.av306.mcvalorant.commands;
 
-import com.destroystokyo.paper.MaterialSetTag;
 import me.av306.mcvalorant.Main;
 import me.av306.mcvalorant.util.MCValorantItemStack;
 import org.bukkit.ChatColor;
@@ -23,10 +22,13 @@ public class CommandGiveWeapons implements CommandExecutor
     @Override
     public boolean onCommand( @NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args )
     {
+        // cancel if sent from console
         if ( !(sender instanceof Player) ) return false;
 
+        // inform relevant players
         sender.sendMessage( ChatColor.GREEN + "Giving MCValorant weapons to all players!" );
         Main.logConsole( sender.getName() + " gave MCValorant weapons to all players!" );
+        Main.informOperator( sender.getName() + " gave MCValorant weapons to all players!" );
 
 
         // AK-47 item
@@ -99,15 +101,15 @@ public class CommandGiveWeapons implements CommandExecutor
             // clear inventory
             inventory.clear();
 
-
             // Add items
             for ( ItemStack item : items )
             {
                 inventory.addItem( item );
             }
 
-            player.sendMessage( ChatColor.GREEN + "Successfully given weapons! Have fun!" );
+            player.sendMessage( Main.SUCCESS + "Successfully given weapons! Have fun!" );
             Main.logConsole( "Successfully gave " + player.getName() + " weapons." );
+            Main.informOperator( Main.SUCCESS + player.getName() + " weapons." );
         }
 
 

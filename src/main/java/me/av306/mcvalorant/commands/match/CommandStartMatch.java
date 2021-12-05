@@ -23,11 +23,8 @@ public class CommandStartMatch implements CommandExecutor
     @Override
     public boolean onCommand( @NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args )
     {
-        // sent from console
-        if ( !(sender instanceof Player) ) return false;
-
         // Log
-        Main.LOGGER.info( "[MCValorant] " + sender.getName() + " started the match!" );
+        Main.logConsole( sender.getName() + " started the match!" );
 
         // enable listeners
         PlayerDeathEventListener.isEnabled = true;
@@ -42,7 +39,7 @@ public class CommandStartMatch implements CommandExecutor
             player.removePotionEffect( PotionEffectType.DAMAGE_RESISTANCE ); // remove invincibility if any
             player.addPotionEffect( new PotionEffect( PotionEffectType.GLOWING, 999999, 1, true, false, true ) );
             player.playSound( player.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_LARGE_BLAST, 10f, 1f );
-            player.sendTitle( ChatColor.GREEN + "Match starting!", "Have fun!", 10, 20, 10 );
+            player.sendTitle( Main.SUCCESS + "Match starting!", "Have fun!", 10, 20, 10 );
         }
 
 
