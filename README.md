@@ -1,2 +1,3 @@
-# mcvalorant
- Valorant in Minecraft!
+# mc-combat-logic
+
+General combat logic for Minecraft!
